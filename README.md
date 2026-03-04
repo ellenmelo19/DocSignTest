@@ -20,3 +20,8 @@ Este repositório contém a solução para o teste técnico da SuperSign, implem
 Clean Architecture para independência de frameworks e fácil manutenção
 Typescript para tipagem estática e redução de erros.
 Testes para cobertura automatizada e robustez.
+
+<!-- domain: Lógica pura de negócio (entidades, interfaces de repositório). Não depende de nada externo.
+application: Use cases (orquestram a lógica: "criar documento", "listar", etc.).
+infra: Implementações concretas (Prisma repository, controllers Fastify).
+presentation: Rotas e server Fastify (a "entrada" da API). -->
