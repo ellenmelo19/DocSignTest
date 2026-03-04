@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prisma:migrate": "prisma migrate dev --url postgresql://postgres:password@localhost:5433/supersign_db?schema=public",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio --url postgresql://postgres:password@localhost:5433/supersign_db?schema=public"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^25.3.3",
     "@types/supertest": "^7.2.0",
     "@vitest/coverage-v8": "^4.0.18",
@@ -23,6 +26,7 @@
   "dependencies": {
     "@fastify/cors": "^11.2.0",
     "@prisma/client": "^7.4.2",
+    "dotenv": "^17.3.1",
     "fastify": "^5.7.4"
   }
 }
