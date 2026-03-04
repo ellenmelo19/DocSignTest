@@ -1,0 +1,14 @@
+# Node.js
+node_modules/
+.env
+build/
+
+# Prisma
+prisma/dev.db
+
+# Docker
+*.log
+
+# Misc
+*.DS_Store
+Thumbs.db
