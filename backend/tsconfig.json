@@ -20,6 +20,6 @@
       "@presentation/*": ["src/presentation/*"]
     }
   },
-  "include": ["src/**/*", "prisma.config.ts", "prisma/**/*.ts"],  
+  "include": ["src/**/*", "tests/**/*", "prisma.config.ts", "prisma/**/*.ts"],  
   "exclude": ["node_modules", "dist"]
 }

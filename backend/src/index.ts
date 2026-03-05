@@ -34,6 +34,7 @@ const start = async () => {
 };
 
 start();
+export { app }; 
 
 process.on('SIGINT', async () => {
   await app.close();

@@ -1,9 +1,12 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { z, ZodError } from 'zod';
+
 import { CreateDocumentUseCase } from '@application/use-cases/CreateDocumentUseCase';
 import { ListDocumentsUseCase } from '@application/use-cases/ListDocumentsUseCase';
 import { UpdateDocumentStatusUseCase } from '@application/use-cases/UpdateDocumentStatusUseCase';
 import { DeleteDocumentUseCase } from '@application/use-cases/DeleteDocumentUseCase';
-import { CreateDocumentDto, UpdateDocumentStatusDto } from '@application/dtos/document.dto';
+
+import { CreateDocumentSchema, UpdateDocumentStatusSchema, CreateDocumentDto } from '@application/dtos/document.dto';
 import { success, created, noContent, error } from '../utils/httpResponses';
 
 export class DocumentController {
@@ -16,11 +19,14 @@ export class DocumentController {
 
   async create(req: FastifyRequest<{ Body: CreateDocumentDto }>, reply: FastifyReply): Promise<void> {
     try {
-      const dto = req.body;
+      const dto = CreateDocumentSchema.parse(req.body);
       const document = await this.createUseCase.execute(dto);
       created(reply, document);
-    } catch (err: any) {
-      error(reply, err.message);
+    } catch (err: unknown) {
+      if (err instanceof ZodError) {
+        return error(reply, err.issues.map(issue => issue.message).join('; '), 400);
+      }
+      error(reply, (err as Error).message || 'Erro interno do servidor', 500);
     }
   }
 
@@ -28,22 +34,28 @@ export class DocumentController {
     try {
       const documents = await this.listUseCase.execute();
       success(reply, documents);
-    } catch (err: any) {
-      error(reply, err.message, 500);
+    } catch (err: unknown) {
+      error(reply, (err as Error).message || 'Erro interno do servidor', 500);
     }
   }
 
-  async updateStatus(req: FastifyRequest<{ Params: { id: string }, Body: { status: string } }>, reply: FastifyReply): Promise<void> {
+  async updateStatus(
+    req: FastifyRequest<{ Params: { id: string }; Body: { status: string } }>,
+    reply: FastifyReply
+  ): Promise<void> {
     try {
-      const dto: UpdateDocumentStatusDto = {
+      const dto = UpdateDocumentStatusSchema.parse({
         id: req.params.id,
-        status: req.body.status as any, 
-      };
+        status: req.body.status,
+      });
       const document = await this.updateStatusUseCase.execute(dto);
       if (!document) return error(reply, 'Documento não encontrado', 404);
       success(reply, document);
-    } catch (err: any) {
-      error(reply, err.message);
+    } catch (err: unknown) {
+      if (err instanceof ZodError) {
+        return error(reply, err.issues.map(issue => issue.message).join('; '), 400);
+      }
+      error(reply, (err as Error).message || 'Erro interno do servidor', 500);
     }
   }
 
@@ -51,8 +63,8 @@ export class DocumentController {
     try {
       await this.deleteUseCase.execute(req.params.id);
       noContent(reply);
-    } catch (err: any) {
-      error(reply, err.message, 404);
+    } catch (err: unknown) {
+      error(reply, (err as Error).message || 'Documento não encontrado', 404);
     }
   }
 }
