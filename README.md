@@ -65,6 +65,7 @@ npm run dev
 ```
 
 Backend roda em `http://localhost:3000`.
+Swagger UI: `http://localhost:3000/docs`.
 
 ### 3. Frontend
 

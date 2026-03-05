@@ -41,4 +41,3 @@ export interface PaginatedDocuments {
   meta: PaginationMeta;
 }
 
-// Definimos tipos claros aqui no centro da cebola.
