@@ -85,9 +85,9 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-gray-800">
                 <div className="flex justify-between items-center mb-4">
-                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                  <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">
                     Novo Documento
                   </Dialog.Title>
                   <button onClick={onClose}>
@@ -97,7 +97,7 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
 
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4">
-                    <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="titulo" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Título
                     </label>
                       <input
@@ -109,7 +109,7 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
                         placeholder="Digite o título do documento"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                                   focus:border-indigo-500 focus:ring-indigo-500 focus:ring-2 
-                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400"
+                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700"
                         required
                       />
                   </div>
@@ -127,7 +127,7 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
                         placeholder="Descreva o documento aqui..."
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                                   focus:border-indigo-500 focus:ring-indigo-500 focus:ring-2 
-                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400 resize-y"
+                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400 resize-y dark:placeholder-gray-500 dark:bg-gray-700"
                         required
                       />
                   </div>
@@ -136,14 +136,14 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
                     <button
                       type="button"
                       onClick={onClose}
-                      className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                      className="px-4 py-2 border border-none rounded-md text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600"
                     >
                       Cancelar
                     </button>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 dark:disabled:opacity-30"
                     >
                       {submitting ? 'Criando...' : 'Criar'}
                     </button>
