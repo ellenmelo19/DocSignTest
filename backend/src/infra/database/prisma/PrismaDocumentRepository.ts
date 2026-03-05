@@ -62,6 +62,9 @@ export class PrismaDocumentRepository implements IDocumentRepository {
   }
 
   async updateStatus(input: UpdateDocumentStatusInput): Promise<Document | null> {
+    const existing = await this.prisma.document.findUnique({ where: { id: input.id } });
+    if (!existing) return null;
+
     const updated = await this.prisma.document.update({
       where: { id: input.id },
       data: { status: input.status as Status },

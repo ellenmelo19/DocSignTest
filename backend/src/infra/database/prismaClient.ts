@@ -25,6 +25,8 @@ let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient({ adapter, log: ['error'] });
+} else if (process.env.NODE_ENV === 'test') {
+  prisma = new PrismaClient({ adapter, log: ['error'] });
 } else {
   if (!globalForPrisma.prisma) {
     globalForPrisma.prisma = new PrismaClient({

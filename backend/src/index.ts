@@ -40,10 +40,13 @@ const start = async () => {
   }
 };
 
-start();
 export { app }; 
 
-process.on('SIGINT', async () => {
-  await app.close();
-  process.exit(0);
-});
+if (process.env.NODE_ENV !== 'test') {
+  start();
+
+  process.on('SIGINT', async () => {
+    await app.close();
+    process.exit(0);
+  });
+}
