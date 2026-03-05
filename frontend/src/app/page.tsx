@@ -5,10 +5,12 @@ import { documentService } from '@/services/documentService';
 import { Document, DocumentStatus } from '@/types/document';
 import toast from 'react-hot-toast';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import DocumentFormModal from '@/components/DocumentFormModal';
 
 export default function Home() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchDocuments = async () => {
     try {
@@ -54,7 +56,7 @@ export default function Home() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Gerenciamento de Documentos</h1>
           <button
-            onClick={() => alert('Modal de criação em breve!')} // vamos implementar depois
+            onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
@@ -130,6 +132,11 @@ export default function Home() {
             </table>
           </div>
         )}
+        <DocumentFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={fetchDocuments}
+        />
       </div>
     </main>
   );
