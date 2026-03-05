@@ -109,13 +109,13 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
                         placeholder="Digite o título do documento"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                                   focus:border-indigo-500 focus:ring-indigo-500 focus:ring-2 
-                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700"
+                                  sm:text-sm px-3 py-2 text-gray-900 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 dark:bg-gray-700"
                         required
                       />
                   </div>
 
                   <div className="mb-6">
-                    <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="descricao" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Descrição
                     </label>
                       <textarea
@@ -127,7 +127,7 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
                         placeholder="Descreva o documento aqui..."
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
                                   focus:border-indigo-500 focus:ring-indigo-500 focus:ring-2 
-                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400 resize-y dark:placeholder-gray-500 dark:bg-gray-700"
+                                  sm:text-sm px-3 py-2 text-gray-900 dark:text-gray-300 placeholder-gray-400 resize-y dark:placeholder-gray-500 dark:bg-gray-700"
                         required
                       />
                   </div>
