@@ -1,6 +1,7 @@
 # Teste Tecnico - Full Stack (SuperSign)
 
 Repositorio da solucao para o teste tecnico da SuperSign.
+A solucao entrega uma API em Node.js + Fastify + Prisma + PostgreSQL e uma interface web em Next.js para gerenciamento de documentos.
 
 ## Stack
 
@@ -8,9 +9,11 @@ Repositorio da solucao para o teste tecnico da SuperSign.
 - Frontend: Next.js (App Router), TypeScript, Tailwind CSS, Axios, react-hot-toast
 - Arquitetura: Clean Architecture (domain, application, infra, presentation)
 
-## Requisitos Atendidos
-
-### Backend
+#### Backend
+- `POST /documents`: cria documento
+- `GET /documents`: lista documentos (com paginação e busca)
+- `PATCH /documents/:id`: atualiza status do documento
+- `DELETE /documents/:id`: remove documento
 
 - Entidade Documento:
   - `id`
@@ -18,13 +21,9 @@ Repositorio da solucao para o teste tecnico da SuperSign.
   - `descricao`
   - `status` (`PENDENTE`, `ASSINADO`)
   - `criado_em`
-- Endpoints:
-  - `POST /documents` (criar)
-  - `GET /documents` (listar)
-  - `PATCH /documents/:id` (atualizar status)
-  - `DELETE /documents/:id` (deletar)
+
 - Validacao de entrada com Zod
-- Tratamento basico de erros e respostas padronizadas
+- Tratamento de erros e respostas padronizadas
 
 ### Frontend
 
@@ -35,12 +34,33 @@ Repositorio da solucao para o teste tecnico da SuperSign.
 - Busca por titulo/descricao
 - Paginacao na lista
 
-## Diferenciais
+### Arquitetura e Decisoes Tecnicas
 
-- Separacao de responsabilidades por camadas
-- DTOs para validacao e contrato
-- Testes unitarios e de integracao
-- Boas praticas REST (status codes e contratos consistentes)
+O backend segue separacao por camadas:
+- `domain`: entidades e contratos (interfaces)
+- `application`: use cases e DTOs
+- `infra`: implementacao do repositorio com Prisma
+- `presentation`: controllers, rotas e adaptacao HTTP
+
+Principais pontos:
+- uso de DTO + Zod para validacao de entrada
+- uso de repository pattern para desacoplamento
+- respostas HTTP consistentes e tratamento de erro padronizado
+- Swagger em `/docs` para documentacao da API
+
+### Qualidade e Testes
+
+- testes unitarios de use cases
+- testes de integracao dos endpoints
+- build e testes validados em backend e frontend
+
+### Diferenciais aplicados
+
+- Clean Architecture / separacao domain e infra
+- DTOs e validacao robusta
+- testes automatizados
+- boas praticas REST
+- Swagger/OpenAPI
 
 ## Como rodar
 
@@ -99,3 +119,8 @@ npm test
 
 - Nao inclui autenticacao (fora do escopo do teste).
 - Nao inclui deploy (fora do escopo do teste).
+
+
+<img width="1658" height="896" alt="image" src="https://github.com/user-attachments/assets/e33e2d4b-a473-408f-a676-e190b981081f" />
+<img width="1702" height="675" alt="image" src="https://github.com/user-attachments/assets/0fc57554-fcbb-432a-beee-5f10f968ee61" />
+
