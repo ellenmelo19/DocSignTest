@@ -1,6 +1,6 @@
 import { PrismaClient, Status } from '@prisma/client';
 import { IDocumentRepository } from '@domain/repositories/IDocumentRepository';
-import { Document, CreateDocumentInput, UpdateDocumentStatusInput, DocumentStatus } from '@domain/entities/Document';
+import { Document, CreateDocumentInput, UpdateDocumentStatusInput, DocumentStatus, ListDocumentsInput, PaginatedDocuments } from '@domain/entities/Document';
 
 export class PrismaDocumentRepository implements IDocumentRepository {
   private prisma: PrismaClient;
@@ -21,11 +21,39 @@ export class PrismaDocumentRepository implements IDocumentRepository {
     return this.mapToDomain(created);
   }
 
-  async findAll(): Promise<Document[]> {
+  async list(input: ListDocumentsInput): Promise<PaginatedDocuments> {
+    const where = input.search
+      ? {
+          OR: [
+            { titulo: { contains: input.search, mode: 'insensitive' as const } },
+            { descricao: { contains: input.search, mode: 'insensitive' as const } },
+          ],
+        }
+      : undefined;
+
+    const totalItems = await this.prisma.document.count({ where });
+    const totalPages = Math.max(1, Math.ceil(totalItems / input.pageSize));
+    const currentPage = Math.min(input.page, totalPages);
+    const skip = (currentPage - 1) * input.pageSize;
+
     const documents = await this.prisma.document.findMany({
+      where,
       orderBy: { criado_em: 'desc' },
+      skip,
+      take: input.pageSize,
     });
-    return documents.map(this.mapToDomain);
+
+    return {
+      items: documents.map(this.mapToDomain),
+      meta: {
+        currentPage,
+        pageSize: input.pageSize,
+        totalItems,
+        totalPages,
+        hasNextPage: currentPage < totalPages,
+        hasPreviousPage: currentPage > 1,
+      },
+    };
   }
 
   async findById(id: string): Promise<Document | null> {

@@ -16,4 +16,24 @@ export interface CreateDocumentInput {
   descricao: string;
 }
 
+export interface ListDocumentsParams {
+  page: number;
+  pageSize: number;
+  search?: string;
+}
+
+export interface PaginationMeta {
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedDocumentsResponse {
+  items: Document[];
+  meta: PaginationMeta;
+}
+
 //manter a consistencia dos tipos entre o front e o back

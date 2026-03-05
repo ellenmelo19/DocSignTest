@@ -1,8 +1,8 @@
-import { Document, CreateDocumentInput, UpdateDocumentStatusInput, DocumentStatus } from '../entities/Document';
+import { Document, CreateDocumentInput, UpdateDocumentStatusInput, ListDocumentsInput, PaginatedDocuments } from '../entities/Document';
 
 export interface IDocumentRepository {
   create(input: CreateDocumentInput): Promise<Document>;
-  findAll(): Promise<Document[]>;
+  list(input: ListDocumentsInput): Promise<PaginatedDocuments>;
   findById(id: string): Promise<Document | null>;
   updateStatus(input: UpdateDocumentStatusInput): Promise<Document | null>;
   delete(id: string): Promise<void>;

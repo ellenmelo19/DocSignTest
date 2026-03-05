@@ -1,12 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { documentService } from '@/services/documentService';
-import { Document, DocumentStatus } from '@/types/document';
-import toast from 'react-hot-toast';
+import { useCallback, useEffect, useState } from 'react';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import toast from 'react-hot-toast';
+
 import DocumentFormModal from '@/components/DocumentFormModal';
-import DeleteConfirmModal from '@/components/DeleteConfirmModal'; 
+import DeleteConfirmModal from '@/components/DeleteConfirmModal';
+import { documentService } from '@/services/documentService';
+import { Document, DocumentStatus, PaginationMeta } from '@/types/document';
+
+const DEFAULT_PAGE_SIZE = 10;
+
+const EMPTY_PAGINATION: PaginationMeta = {
+  currentPage: 1,
+  pageSize: DEFAULT_PAGE_SIZE,
+  totalItems: 0,
+  totalPages: 1,
+  hasNextPage: false,
+  hasPreviousPage: false,
+};
 
 export default function Home() {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -14,22 +26,41 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<PaginationMeta>(EMPTY_PAGINATION);
+  const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState<string | undefined>(undefined);
 
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await documentService.list();
-      setDocuments(data);
+      const data = await documentService.list({
+        page,
+        pageSize: DEFAULT_PAGE_SIZE,
+        search,
+      });
+      setDocuments(Array.isArray(data.items) ? data.items : []);
+      setPagination(data.meta);
     } catch (err: any) {
       toast.error('Erro ao carregar documentos: ' + err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
 
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, [fetchDocuments]);
+
+  useEffect(() => {
+    const debounceId = window.setTimeout(() => {
+      const normalized = searchInput.trim();
+      setPage(1);
+      setSearch(normalized ? normalized : undefined);
+    }, 400);
+
+    return () => window.clearTimeout(debounceId);
+  }, [searchInput]);
 
   const handleStatusChange = async (id: string, newStatus: DocumentStatus) => {
     try {
@@ -61,7 +92,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Gerenciamento de Documentos</h1>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -72,13 +103,22 @@ export default function Home() {
           </button>
         </div>
 
+        <div className="mb-4">
+          <input
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            placeholder="Buscar por titulo ou descricao"
+            className="w-full sm:max-w-md rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
         {loading ? (
           <div className="text-center py-10">
             <p className="text-gray-500 dark:text-gray-400">Carregando documentos...</p>
           </div>
         ) : documents.length === 0 ? (
           <div className="text-center py-10 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <p className="text-gray-500 dark:text-gray-400">Nenhum documento encontrado. Crie o primeiro!</p>
+            <p className="text-gray-500 dark:text-gray-400">Nenhum documento encontrado.</p>
           </div>
         ) : (
           <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 rounded-lg">
@@ -86,10 +126,10 @@ export default function Home() {
               <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">
-                    Título
+                    Titulo
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Descrição
+                    Descricao
                   </th>
                   <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Status
@@ -98,7 +138,7 @@ export default function Home() {
                     Criado em
                   </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                    <span className="sr-only">Ações</span>
+                    <span className="sr-only">Acoes</span>
                   </th>
                 </tr>
               </thead>
@@ -114,7 +154,7 @@ export default function Home() {
                     <td className="whitespace-nowrap px-3 py-4 text-sm">
                       <select
                         value={doc.status}
-                        onChange={(e) => handleStatusChange(doc.id, e.target.value as DocumentStatus)}
+                        onChange={(event) => handleStatusChange(doc.id, event.target.value as DocumentStatus)}
                         className={`rounded-md border-gray-300 dark:border-gray-600 text-sm font-medium bg-white dark:bg-gray-800 ${
                           doc.status === DocumentStatus.PENDENTE ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'
                         }`}
@@ -140,13 +180,31 @@ export default function Home() {
             </table>
           </div>
         )}
+
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Pagina {pagination.currentPage} de {pagination.totalPages} - {pagination.totalItems} documentos
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((current) => Math.max(1, current - 1))}
+              disabled={!pagination.hasPreviousPage || loading}
+              className="px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-50"
+            >
+              Anterior
+            </button>
+            <button
+              onClick={() => setPage((current) => current + 1)}
+              disabled={!pagination.hasNextPage || loading}
+              className="px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-600 disabled:opacity-50"
+            >
+              Proxima
+            </button>
+          </div>
+        </div>
       </div>
 
-      <DocumentFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={fetchDocuments}
-      />
+      <DocumentFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={fetchDocuments} />
 
       {isDeleteModalOpen && (
         <DeleteConfirmModal

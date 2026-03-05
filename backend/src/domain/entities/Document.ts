@@ -21,4 +21,24 @@ export interface UpdateDocumentStatusInput {
   status: DocumentStatus;
 }
 
+export interface ListDocumentsInput {
+  page: number;
+  pageSize: number;
+  search?: string;
+}
+
+export interface PaginationMeta {
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedDocuments {
+  items: Document[];
+  meta: PaginationMeta;
+}
+
 // Definimos tipos claros aqui no centro da cebola.
