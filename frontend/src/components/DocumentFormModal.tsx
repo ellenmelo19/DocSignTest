@@ -42,7 +42,7 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
 
     const validatedData = CreateSchema.safeParse(formData);
     if (!validatedData.success) {
-      toast.error(validatedData.error.errors.map(e => e.message).join('; '));
+      toast.error(validatedData.error.issues.map(e => e.message).join('; '));  
       return;
     }
 
