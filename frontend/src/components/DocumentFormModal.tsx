@@ -87,30 +87,36 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
                     <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">
                       Título
                     </label>
-                    <input
-                      type="text"
-                      id="titulo"
-                      name="titulo"
-                      value={formData.titulo}
-                      onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      required
-                    />
+                      <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        value={formData.titulo}
+                        onChange={handleChange}
+                        placeholder="Digite o título do documento"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 focus:ring-2 
+                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400"
+                        required
+                      />
                   </div>
 
                   <div className="mb-6">
                     <label htmlFor="descricao" className="block text-sm font-medium text-gray-700">
                       Descrição
                     </label>
-                    <textarea
-                      id="descricao"
-                      name="descricao"
-                      rows={4}
-                      value={formData.descricao}
-                      onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      required
-                    />
+                      <textarea
+                        id="descricao"
+                        name="descricao"
+                        rows={4}
+                        value={formData.descricao}
+                        onChange={handleChange}
+                        placeholder="Descreva o documento aqui..."
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 focus:ring-2 
+                                  sm:text-sm px-3 py-2 text-gray-900 placeholder-gray-400 resize-y"
+                        required
+                      />
                   </div>
 
                   <div className="flex justify-end space-x-3">
