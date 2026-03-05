@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitest/config';
-import tsconfigPaths from 'vite-tsconfig-paths';  // Plugin herda paths do tsconfig
+import tsconfigPaths from 'vite-tsconfig-paths';  
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],  // Só isso resolve aliases
+  plugins: [tsconfigPaths()],  
   test: {
     globals: true,
     environment: 'node',
@@ -10,6 +10,6 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
     },
-    include: ['tests/**/*.{test,spec}.ts'],  // Pega unit e integration
+    include: ['tests/**/*.{test,spec}.ts'], 
   },
 });
