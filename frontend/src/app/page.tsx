@@ -6,11 +6,14 @@ import { Document, DocumentStatus } from '@/types/document';
 import toast from 'react-hot-toast';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import DocumentFormModal from '@/components/DocumentFormModal';
+import DeleteConfirmModal from '@/components/DeleteConfirmModal';
 
 export default function Home() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const fetchDocuments = async () => {
     try {
@@ -38,11 +41,15 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja deletar este documento?')) return;
+  const handleDelete = (id: string) => {
+    setDeleteId(id);
+    setIsDeleteModalOpen(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!deleteId) return;
     try {
-      await documentService.delete(id);
+      await documentService.delete(deleteId);
       toast.success('Documento deletado!');
       fetchDocuments();
     } catch (err: any) {
@@ -119,12 +126,7 @@ export default function Home() {
                       {new Date(doc.criado_em).toLocaleDateString('pt-BR')}
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                      <button
-                        onClick={() => handleDelete(doc.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Deletar
-                      </button>
+                      <button onClick={() => handleDelete(doc.id)} className="text-red-600 hover:text-red-900">Deletar</button>
                     </td>
                   </tr>
                 ))}
@@ -136,6 +138,11 @@ export default function Home() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSuccess={fetchDocuments}
+        />
+        <DeleteConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={confirmDelete}
         />
       </div>
     </main>

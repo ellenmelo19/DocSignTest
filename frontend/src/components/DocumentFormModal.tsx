@@ -6,6 +6,12 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { documentService } from '@/services/documentService';
 import toast from 'react-hot-toast';
 import { CreateDocumentInput } from '@/types/document';
+import { z } from 'zod';
+
+const CreateSchema = z.object({
+  titulo: z.string().trim().min(1, 'Título é obrigatório'),
+  descricao: z.string().trim().min(1, 'Descrição é obrigatória'),
+});
 
 interface DocumentFormModalProps {
   isOpen: boolean;
@@ -33,6 +39,13 @@ export default function DocumentFormModal({ isOpen, onClose, onSuccess }: Docume
     }
 
     setSubmitting(true);
+
+    const validatedData = CreateSchema.safeParse(formData);
+    if (!validatedData.success) {
+      toast.error(validatedData.error.errors.map(e => e.message).join('; '));
+      return;
+    }
+
     try {
       await documentService.create(formData);
       toast.success('Documento criado com sucesso!');
