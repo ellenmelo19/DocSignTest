@@ -11,7 +11,14 @@ import { documentRoutes } from '@presentation/routes/documentRoutes';
 
 const app = fastify({ logger: true });
 
-app.register(cors, { origin: '*' });  // Para dev; 
+//app.register(cors, { origin: '*' });  // Para dev; 
+
+app.register(cors, {
+  origin: '*',  
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, 
+});
 
 const repository = new PrismaDocumentRepository(prisma);
 const createUseCase = new CreateDocumentUseCase(repository);
